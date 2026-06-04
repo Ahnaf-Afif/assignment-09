@@ -1,23 +1,16 @@
 "use client";
-
-import { Card, Separator } from "@heroui/react";
-import {
-  Button,
-  Description,
-  FieldError,
-  Form,
-  Input,
-  Label,
-  TextField,
-} from "@heroui/react";
-import { authClient } from "@/app/lib/auth-client";
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "../lib/auth-client";
+import toast from "react-hot-toast";
+import { Dumbbell } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 
 const LoginPage = () => {
+  const router = useRouter();
+
   const onSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
     const user = Object.fromEntries(formData.entries());
 
@@ -27,91 +20,107 @@ const LoginPage = () => {
     });
 
     if (data) {
-      redirect("/");
+      toast.success("Welcome back!");
+      router.push("/");
     }
 
     if (error) {
-      // toast
-      alert("Error");
+      toast.error(error.message || "Login failed. Please try again.");
     }
   };
 
   const handleGoogleSignin = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-    });
+    await authClient.signIn.social({ provider: "google" });
+    toast.success("Logged in with Google!");
+    router.push("/");
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="text-center my-3">
-        <h1 className="text-2xl font-bold">Login</h1>
-        <p>Start your adventure with Wanderlust</p>
-      </div>
-      <Card className="border rounded-none">
-        <Form onSubmit={onSubmit} className="flex w-96 flex-col gap-4">
-          <TextField
-            isRequired
-            name="email"
-            type="email"
-            validate={(value) => {
-              if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
-                return "Please enter a valid email address";
-              }
-              return null;
-            }}
-          >
-            <Label>Email</Label>
-            <Input placeholder="john@example.com" />
-            <FieldError />
-          </TextField>
-          <TextField
-            isRequired
-            minLength={8}
-            name="password"
-            type="password"
-            validate={(value) => {
-              if (value.length < 8) {
-                return "Password must be at least 8 characters";
-              }
-              if (!/[A-Z]/.test(value)) {
-                return "Password must contain at least one uppercase letter";
-              }
-              if (!/[0-9]/.test(value)) {
-                return "Password must contain at least one number";
-              }
-              return null;
-            }}
-          >
-            <Label>Password</Label>
-            <Input placeholder="Enter your password" />
-            <Description>
-              Must be at least 8 characters with 1 uppercase and 1 number
-            </Description>
-            <FieldError />
-          </TextField>
-          <div className="flex justify-center gap-2">
-            <Button className={"rounded-none w-full bg-cyan-500"} type="submit">
-              Login
-            </Button>
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gray-50">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="bg-green-600 p-2 rounded-xl">
+              <Dumbbell className="text-white w-6 h-6" />
+            </div>
+            <span className="font-bold text-2xl text-gray-900">SportNest</span>
           </div>
-        </Form>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">
+            Welcome back
+          </h1>
+          <p className="text-gray-500 text-sm">
+            Sign in to book your favourite sports facilities
+          </p>
+        </div>
 
-        <div className="flex justify-center items-center gap-3">
-          <Separator />
-          <div className="whitespace-nowrap"> Or sign up with </div>
-          <Separator />
-        </div>
-        <div>
-          <Button
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+          <form onSubmit={onSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Email
+              </label>
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="john@example.com"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Password
+              </label>
+              <input
+                name="password"
+                type="password"
+                required
+                minLength={6}
+                placeholder="Enter your password"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                At least 6 characters with 1 uppercase letter
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors"
+            >
+              Login
+            </button>
+          </form>
+
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 border-t border-gray-100" />
+            <span className="text-xs text-gray-400 font-medium">
+              OR CONTINUE WITH
+            </span>
+            <div className="flex-1 border-t border-gray-100" />
+          </div>
+
+          <button
             onClick={handleGoogleSignin}
-            variant="outline"
-            className={"w-full rounded-none"}
+            className="w-full border border-gray-200 py-3 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
           >
-            <FcGoogle /> Sign in with Google
-          </Button>
+            <FcGoogle />
+            Continue with Google
+          </button>
+
+          <p className="text-center text-sm text-gray-500 mt-6">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-green-600 font-semibold hover:underline"
+            >
+              Sign up free
+            </Link>
+          </p>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };
