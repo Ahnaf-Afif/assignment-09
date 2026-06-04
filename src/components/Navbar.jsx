@@ -1,14 +1,14 @@
 "use client";
 
-// import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/app/lib/auth-client";
 import { Avatar, Button } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 const Navbar = () => {
-  // const { data: session } = authClient.useSession();
-  // const user = session?.user;
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -47,30 +47,30 @@ const Navbar = () => {
             <Link href={"/profile"}>Profile</Link>
           </li>
 
-          {/* {user ? ( */}
-          <>
-            <li>
-              {/* <Avatar>
+          {user ? (
+            <>
+              <li>
+                <Avatar>
                   <Avatar.Image
                     referrerPolicy="no-referrer"
                     alt="John Doe"
                     src={user?.image}
                   />
                   <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
-                </Avatar> */}
-            </li>
-            <li>
-              <Button
-                size="sm"
-                onClick={handleSignOut}
-                variant="danger"
-                className={"rounded-none"}
-              >
-                Logout
-              </Button>
-            </li>
-          </>
-          {/* ) : (
+                </Avatar>
+              </li>
+              <li>
+                <Button
+                  size="sm"
+                  onClick={handleSignOut}
+                  variant="danger"
+                  className={"rounded-none"}
+                >
+                  Logout
+                </Button>
+              </li>
+            </>
+          ) : (
             <>
               <li>
                 <Link href={"/login"}>Login</Link>
@@ -79,7 +79,7 @@ const Navbar = () => {
                 <Link href={"/signup"}>Sign Up</Link>
               </li>
             </>
-          )} */}
+          )}
         </ul>
       </nav>
     </div>
