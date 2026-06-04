@@ -1,57 +1,80 @@
 "use client";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { Trash2, AlertTriangle } from "lucide-react";
+import { authClient } from "../app/lib/auth-client";
 
-import { TrashBin } from "@gravity-ui/icons";
-import { AlertDialog, Button } from "@heroui/react";
-import { redirect } from "next/navigation";
-
-export function DeleteAlert({ destination }) {
-  const { _id, destinationName } = destination;
+export function DeleteAlert({ facility, onDelete }) {
+  const [showDialog, setShowDialog] = useState(false);
+  const { _id, name } = facility;
 
   const handleDelete = async () => {
-    const res = await fetch(`http://localhost:5000/destination/${_id}`, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-      },
-      credentials: "include",
-    });
+    const { data: tokenData } = await authClient.token();
 
-    const data = await res.json();
-    redirect("/destinations");
-    console.log(data);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/destination/${_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${tokenData?.token}`,
+          },
+        },
+      );
+      if (!res.ok) throw new Error("Failed to delete facility");
+    } catch {
+      toast.error("Failed to delete facility. Please try again.");
+      return;
+    }
+
+    toast.success(`"${name}" has been deleted`);
+    setShowDialog(false);
+    if (onDelete) onDelete(_id);
   };
+
   return (
-    <AlertDialog>
-      <Button className={"text-red-500 rounded-none"} variant="outline">
-        <TrashBin /> Delete
-      </Button>
-      <AlertDialog.Backdrop>
-        <AlertDialog.Container>
-          <AlertDialog.Dialog className="sm:max-w-[400px]">
-            <AlertDialog.CloseTrigger />
-            <AlertDialog.Header>
-              <AlertDialog.Icon status="danger" />
-              <AlertDialog.Heading>
-                Delete destination permanently?
-              </AlertDialog.Heading>
-            </AlertDialog.Header>
-            <AlertDialog.Body>
-              <p>
-                This will permanently delete <strong>{destinationName}</strong>{" "}
-                and all of its data. This action cannot be undone.
-              </p>
-            </AlertDialog.Body>
-            <AlertDialog.Footer>
-              <Button slot="close" variant="tertiary">
+    <>
+      <button
+        onClick={() => setShowDialog(true)}
+        className="flex items-center gap-1.5 text-sm text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+      >
+        <Trash2 className="w-3.5 h-3.5" /> Delete
+      </button>
+
+      {showDialog && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-red-100 p-2.5 rounded-full">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <h3 className="font-bold text-gray-900 text-lg">
+                Delete Facility?
+              </h3>
+            </div>
+            <p className="text-gray-500 text-sm mb-6">
+              This will permanently delete{" "}
+              <strong className="text-gray-800">"{name}"</strong> and all its
+              booking data. This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDialog(false)}
+                className="flex-1 border border-gray-200 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
                 Cancel
-              </Button>
-              <Button onClick={handleDelete} slot="close" variant="danger">
+              </button>
+              <button
+                onClick={handleDelete}
+                className="flex-1 bg-red-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors"
+              >
                 Delete
-              </Button>
-            </AlertDialog.Footer>
-          </AlertDialog.Dialog>
-        </AlertDialog.Container>
-      </AlertDialog.Backdrop>
-    </AlertDialog>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

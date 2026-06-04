@@ -1,226 +1,200 @@
 "use client";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { Edit2, X } from "lucide-react";
+import { authClient } from "../app/lib/auth-client";
 
-import { Envelope } from "@gravity-ui/icons";
-import {
-  Button,
-  FieldError,
-  Input,
-  Label,
-  ListBox,
-  Modal,
-  Surface,
-  TextArea,
-  TextField,
-  Select,
-} from "@heroui/react";
-import { BiEdit } from "react-icons/bi";
+const sportTypes = [
+  "Football",
+  "Badminton",
+  "Swimming",
+  "Tennis",
+  "Cricket",
+  "Basketball",
+  "Volleyball",
+  "Table Tennis",
+];
 
-export function EditModal({ destination }) {
-  const {
-    _id,
-    imageUrl,
-    price,
-    destinationName,
-    duration,
-    country,
-    description,
-    category,
-    departureDate,
-  } = destination;
+export function EditModal({ facility, onUpdate }) {
+  const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({ ...facility });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const destination = Object.fromEntries(formData.entries());
+    const { _id, ...updateData } = form;
+    const { data: tokenData } = await authClient.token();
 
-    const res = await fetch(`http://localhost:5000/destination/${_id}`, {
-      method: "PATCH",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(destination),
-      credentials: "include",
-    });
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/destination/${facility._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${tokenData?.token}`,
+          },
+          body: JSON.stringify(updateData),
+        },
+      );
+      if (!res.ok) throw new Error("Failed to update facility");
+    } catch {
+      toast.error("Failed to update facility. Please try again.");
+      return;
+    }
 
-    const data = await res.json();
-    console.log(data);
+    toast.success("Facility updated successfully");
+    setShowModal(false);
+    if (onUpdate) onUpdate({ ...facility, ...updateData });
   };
+
   return (
-    <Modal>
-      <Button variant="outline" className={"rounded-none"}>
-        <BiEdit /> Edit
-      </Button>
+    <>
+      <button
+        onClick={() => setShowModal(true)}
+        className="flex items-center gap-1.5 text-sm text-blue-600 border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+      >
+        <Edit2 className="w-3.5 h-3.5" /> Edit
+      </button>
 
-      <Modal.Backdrop>
-        <Modal.Container placement="auto">
-          <Modal.Dialog className="sm:max-w-xl">
-            <Modal.CloseTrigger />
-            <Modal.Header>
-              <Modal.Heading>Edit Destination</Modal.Heading>
-            </Modal.Header>
-            <Modal.Body className="p-6">
-              <Surface variant="default">
-                <form onSubmit={onSubmit} className="p-10 space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Destination Name */}
-                    <div className="md:col-span-2">
-                      <TextField
-                        defaultValue={destinationName}
-                        name="destinationName"
-                        isRequired
-                      >
-                        <Label>Destination Name</Label>
-                        <Input
-                          placeholder="Bali Paradise"
-                          className="rounded-2xl"
-                        />
-                        <FieldError />
-                      </TextField>
-                    </div>
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-6 max-w-2xl w-full shadow-xl my-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-xl text-gray-900">Edit Facility</h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-                    {/* Country */}
-                    <TextField defaultValue={country} name="country" isRequired>
-                      <Label>Country</Label>
-                      <Input placeholder="Indonesia" className="rounded-2xl" />
-                      <FieldError />
-                    </TextField>
+            <form
+              onSubmit={onSubmit}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Facility Name
+                </label>
+                <input
+                  name="name"
+                  defaultValue={facility.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
 
-                    {/* Category - Updated Select Component */}
-                    <div>
-                      <Select
-                        defaultValue={category}
-                        name="category"
-                        isRequired
-                        className="w-full"
-                        placeholder="Select category"
-                      >
-                        <Label>Category</Label>
-                        <Select.Trigger className="rounded-2xl">
-                          <Select.Value />
-                          <Select.Indicator />
-                        </Select.Trigger>
-                        <Select.Popover>
-                          <ListBox>
-                            <ListBox.Item id="Beach" textValue="Beach">
-                              Beach
-                              <ListBox.ItemIndicator />
-                            </ListBox.Item>
-                            <ListBox.Item id="Mountain" textValue="Mountain">
-                              Mountain
-                              <ListBox.ItemIndicator />
-                            </ListBox.Item>
-                            <ListBox.Item id="City" textValue="City">
-                              City
-                              <ListBox.ItemIndicator />
-                            </ListBox.Item>
-                            <ListBox.Item id="Adventure" textValue="Adventure">
-                              Adventure
-                              <ListBox.ItemIndicator />
-                            </ListBox.Item>
-                            <ListBox.Item id="Cultural" textValue="Cultural">
-                              Cultural
-                              <ListBox.ItemIndicator />
-                            </ListBox.Item>
-                            <ListBox.Item id="Luxury" textValue="Luxury">
-                              Luxury
-                              <ListBox.ItemIndicator />
-                            </ListBox.Item>
-                          </ListBox>
-                        </Select.Popover>
-                      </Select>
-                    </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Facility Type
+                </label>
+                <select
+                  name="facility_type"
+                  defaultValue={facility.facility_type}
+                  onChange={handleChange}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  {sportTypes.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                    {/* Price */}
-                    <TextField
-                      defaultValue={price}
-                      name="price"
-                      type="number"
-                      isRequired
-                    >
-                      <Label>Price (USD)</Label>
-                      <Input
-                        type="number"
-                        placeholder="1299"
-                        className="rounded-2xl"
-                      />
-                      <FieldError />
-                    </TextField>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
+                </label>
+                <input
+                  name="location"
+                  defaultValue={facility.location}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
 
-                    {/* Duration */}
-                    <TextField
-                      defaultValue={duration}
-                      name="duration"
-                      isRequired
-                    >
-                      <Label>Duration</Label>
-                      <Input
-                        placeholder="7 Days / 6 Nights"
-                        className="rounded-2xl"
-                      />
-                      <FieldError />
-                    </TextField>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price Per Hour (৳)
+                </label>
+                <input
+                  type="number"
+                  name="price_per_hour"
+                  defaultValue={facility.price_per_hour}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
 
-                    {/* Departure Date */}
-                    <div className="md:col-span-2">
-                      <TextField
-                        defaultValue={departureDate}
-                        name="departureDate"
-                        type="date"
-                        isRequired
-                      >
-                        <Label>Departure Date</Label>
-                        <Input type="date" className="rounded-2xl" />
-                        <FieldError />
-                      </TextField>
-                    </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Capacity
+                </label>
+                <input
+                  type="number"
+                  name="capacity"
+                  defaultValue={facility.capacity}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
 
-                    {/* Image URL - Removed preview */}
-                    <div className="md:col-span-2">
-                      <TextField
-                        defaultValue={imageUrl}
-                        name="imageUrl"
-                        isRequired
-                      >
-                        <Label>Image URL</Label>
-                        <Input
-                          type="url"
-                          placeholder="https://example.com/bali-paradise.jpg"
-                          className="rounded-2xl"
-                        />
-                        <FieldError />
-                      </TextField>
-                    </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image URL
+                </label>
+                <input
+                  type="url"
+                  name="image"
+                  defaultValue={facility.image}
+                  onChange={handleChange}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
 
-                    {/* Description */}
-                    <div className="md:col-span-2">
-                      <TextField
-                        defaultValue={description}
-                        name="description"
-                        isRequired
-                      >
-                        <Label>Description</Label>
-                        <TextArea
-                          placeholder="Describe the travel experience..."
-                          className="rounded-3xl"
-                        />
-                        <FieldError />
-                      </TextField>
-                    </div>
-                  </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  defaultValue={facility.description}
+                  onChange={handleChange}
+                  rows={3}
+                  required
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
 
-                  {/* Buttons */}
-
-                  <Modal.Footer>
-                    <Button type="submit" slot="close">
-                      Save
-                    </Button>
-                  </Modal.Footer>
-                </form>
-              </Surface>
-            </Modal.Body>
-          </Modal.Dialog>
-        </Modal.Container>
-      </Modal.Backdrop>
-    </Modal>
+              <div className="md:col-span-2 flex gap-3 justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-700 transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

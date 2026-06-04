@@ -1,78 +1,141 @@
+import Link from "next/link";
+import { Dumbbell, Phone, Mail, MapPin } from "lucide-react";
+
 const Footer = () => {
   return (
-    <footer className="bg-black mt-20 text-gray-400 px-6 md:px-16 py-16">
-      <div className="max-w-7xl mx-auto">
+    <footer className="bg-gray-900 text-gray-400 mt-20">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        {/* Brand */}
         <div className="mb-12">
-          <h1 className="text-6xl md:text-7xl font-bold text-white">
-            Wanderlust
-          </h1>
-          <p className="mt-4 max-w-xl">
-            Your gateway to extraordinary travel experiences around the world.
+          <div className="flex items-center gap-2 mb-3">
+            <div className="bg-green-600 p-1.5 rounded-lg">
+              <Dumbbell className="text-white w-5 h-5" />
+            </div>
+            <h1 className="text-3xl font-bold text-white">SportNest</h1>
+          </div>
+          <p className="max-w-md text-sm leading-relaxed">
+            Your ultimate platform for booking sports facilities. Find and
+            reserve football turfs, badminton courts, swimming lanes, tennis
+            courts, and much more.
           </p>
         </div>
 
-        {/* Grid Section */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-white mb-3 tracking-wide">NEWSLETTER</h3>
-            <p className="mb-4 text-sm">
-              Subscribe for exclusive travel deals and inspiration.
-            </p>
-
-            <div className="flex items-center bg-gray-800 px-4 py-3">
-              <input
-                type="email"
-                placeholder="Enter email"
-                className="bg-transparent outline-none flex-1 text-sm"
-              />
-              <span className="text-white text-lg">↗</span>
-            </div>
-          </div>
-
           {/* Quick Links */}
           <div>
-            <h3 className="text-white mb-3 tracking-wide">QUICK LINKS</h3>
-            <ul className="space-y-2">
-              <li className="hover:text-white cursor-pointer">Home</li>
-              <li className="hover:text-white cursor-pointer">Destinations</li>
-              <li className="hover:text-white cursor-pointer">My Bookings</li>
-              <li className="hover:text-white cursor-pointer">My Profile</li>
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+              Quick Links
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <Link href="/" className="hover:text-white transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/facilities"
+                  className="hover:text-white transition-colors"
+                >
+                  All Facilities
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/my-bookings"
+                  className="hover:text-white transition-colors"
+                >
+                  My Bookings
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/add-facility"
+                  className="hover:text-white transition-colors"
+                >
+                  Add Facility
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Sports */}
+          <div>
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+              Sports
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              <li className="hover:text-white cursor-pointer transition-colors">
+                Football
+              </li>
+              <li className="hover:text-white cursor-pointer transition-colors">
+                Badminton
+              </li>
+              <li className="hover:text-white cursor-pointer transition-colors">
+                Swimming
+              </li>
+              <li className="hover:text-white cursor-pointer transition-colors">
+                Tennis
+              </li>
+              <li className="hover:text-white cursor-pointer transition-colors">
+                Cricket
+              </li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h3 className="text-white mb-3 tracking-wide">SUPPORT</h3>
-            <ul className="space-y-2">
-              <li className="hover:text-white cursor-pointer">Help Center</li>
-              <li className="hover:text-white cursor-pointer">
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+              Support
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              <li className="hover:text-white cursor-pointer transition-colors">
+                Help Center
+              </li>
+              <li className="hover:text-white cursor-pointer transition-colors">
                 Terms of Service
               </li>
-              <li className="hover:text-white cursor-pointer">
+              <li className="hover:text-white cursor-pointer transition-colors">
                 Privacy Policy
+              </li>
+              <li className="hover:text-white cursor-pointer transition-colors">
+                Refund Policy
               </li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h3 className="text-white mb-3 tracking-wide">CONTACT US</h3>
-            <ul className="space-y-2">
-              <li>786 901 1622</li>
-              <li>info@wandarland.com</li>
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+              Contact Us
+            </h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-2">
+                <Phone className="w-4 h-4 shrink-0" /> +880 1700-000000
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail className="w-4 h-4 shrink-0" /> hello@sportnest.com
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 shrink-0" /> Dhaka, Bangladesh
+              </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="border-t border-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm">© 2026 Wanderlust. All rights reserved.</p>
-
-          <div className="flex gap-5 mt-4 md:mt-0 text-white text-lg">
-            <span className="cursor-pointer">X</span>
-            <span className="cursor-pointer">in</span>
-            <span className="cursor-pointer">◎</span>
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm">© 2026 SportNest. All rights reserved.</p>
+          <div className="flex gap-5 text-white text-sm font-semibold">
+            <span className="cursor-pointer hover:text-green-400 transition-colors">
+              𝕏
+            </span>
+            <span className="cursor-pointer hover:text-green-400 transition-colors">
+              in
+            </span>
+            <span className="cursor-pointer hover:text-green-400 transition-colors">
+              f
+            </span>
           </div>
         </div>
       </div>
