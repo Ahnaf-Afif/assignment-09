@@ -30,7 +30,7 @@ const FacilitiesPage = () => {
     const fetchFacilities = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/destination`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities`,
         );
         if (res.ok) {
           const data = await res.json();

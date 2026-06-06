@@ -36,7 +36,7 @@ const DestinationCard = ({ destination }) => {
             <h3 className="text-2xl font-bold">$ {price}</h3>
           </div>
         </div>
-        <Link href={`/destinations/${_id}`}>
+        <Link href={`/facilities/${_id}`}>
           <Button variant="ghost" className={"mt-1 text-cyan-500"}>
             {" "}
             <FiExternalLink /> Book Now

@@ -25,7 +25,7 @@ const FacilityDetailsPage = () => {
       try {
         const { data: tokenData } = await authClient.token();
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/destination/${id}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities/${id}`,
           { headers: { authorization: `Bearer ${tokenData?.token}` } },
         );
         if (res.ok) {
