@@ -41,17 +41,31 @@ const AddFacilityPage = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const slots = formData.getAll("available_slots");
-    const facilityData = {
-      ...Object.fromEntries(formData.entries()),
-      available_slots: slots,
-      price_per_hour: Number(formData.get("price_per_hour")),
-      capacity: Number(formData.get("capacity")),
-      owner_email: session.user.email,
-    };
 
     const { data: tokenData } = await authClient.token();
 
     try {
+      const imageData = new FormData();
+      imageData.append("image", formData.get("image"));
+
+      const imageRes = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_KEY}`,
+        {
+          method: "POST",
+          body: imageData,
+        },
+      );
+      const imageResult = await imageRes.json();
+
+      const facilityData = {
+        ...Object.fromEntries(formData.entries()),
+        image: imageResult.data.url,
+        available_slots: slots,
+        price_per_hour: Number(formData.get("price_per_hour")),
+        capacity: Number(formData.get("capacity")),
+        owner_email: session.user.email,
+      };
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities`,
         {
@@ -162,12 +176,13 @@ const AddFacilityPage = () => {
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Image URL
+                Facility Image *
               </label>
               <input
-                type="url"
+                type="file"
                 name="image"
-                placeholder="https://example.com/facility.jpg"
+                accept="image/*"
+                required
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>

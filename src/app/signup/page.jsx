@@ -44,7 +44,7 @@ const SignUpPage = () => {
   const handleGoogleSignin = async () => {
     await authClient.signIn.social({ provider: "google" });
     toast.success("Logged in with Google!");
-    router.push("/");
+    router.push("/login");
   };
 
   return (
