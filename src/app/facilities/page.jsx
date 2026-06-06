@@ -29,8 +29,11 @@ const FacilitiesPage = () => {
   useEffect(() => {
     const fetchFacilities = async () => {
       try {
+        const params = new URLSearchParams();
+        if (search) params.set("search", search);
+        if (selectedType !== "All") params.set("type", selectedType);
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities?${params.toString()}`,
         );
         if (res.ok) {
           const data = await res.json();
@@ -43,17 +46,7 @@ const FacilitiesPage = () => {
       }
     };
     fetchFacilities();
-  }, []);
-
-  const filtered = facilities.filter((f) => {
-    const facilityName = f.name || f.destinationName || "";
-    const matchSearch = facilityName
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchType =
-      selectedType === "All" || f.facility_type === selectedType;
-    return matchSearch && matchType;
-  });
+  }, [search, selectedType]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -114,7 +107,7 @@ const FacilitiesPage = () => {
       {/* Results Count */}
       <p className="text-sm text-gray-400 mb-5">
         Showing{" "}
-        <span className="font-semibold text-gray-700">{filtered.length}</span>{" "}
+        <span className="font-semibold text-gray-700">{facilities.length}</span>{" "}
         facilities
       </p>
 
@@ -122,7 +115,7 @@ const FacilitiesPage = () => {
         <div className="flex justify-center py-20">
           <div className="w-10 h-10 border-4 border-green-200 border-t-green-600 rounded-full animate-spin" />
         </div>
-      ) : filtered.length === 0 ? (
+      ) : facilities.length === 0 ? (
         <div className="text-center py-20">
           <p className="text-gray-400 text-lg">
             No facilities found matching your search.
@@ -139,7 +132,7 @@ const FacilitiesPage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filtered.map((facility) => (
+          {facilities.map((facility) => (
             <FacilityCard key={facility._id} facility={facility} />
           ))}
         </div>
