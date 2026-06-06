@@ -13,7 +13,7 @@ export function DeleteAlert({ facility, onDelete }) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities/${_id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility/${_id}`,
         {
           method: "DELETE",
           headers: {

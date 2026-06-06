@@ -67,7 +67,7 @@ const AddFacilityPage = () => {
       };
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility`,
         {
           method: "POST",
           headers: {

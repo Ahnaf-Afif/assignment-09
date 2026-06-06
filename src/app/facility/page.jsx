@@ -33,7 +33,7 @@ const FacilitiesPage = () => {
         if (search) params.set("search", search);
         if (selectedType !== "All") params.set("type", selectedType);
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities?${params.toString()}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility?${params.toString()}`,
         );
         if (res.ok) {
           const data = await res.json();

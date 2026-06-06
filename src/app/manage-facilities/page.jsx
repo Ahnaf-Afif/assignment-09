@@ -24,7 +24,7 @@ const ManageFacilitiesPage = () => {
       try {
         const { data: tokenData } = await authClient.token();
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities?owner=${user?.email}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility?owner=${user?.email}`,
           { headers: { authorization: `Bearer ${tokenData?.token}` } },
         );
         if (res.ok) {

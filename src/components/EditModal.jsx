@@ -30,7 +30,7 @@ export function EditModal({ facility, onUpdate }) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities/${facility._id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility/${facility._id}`,
         {
           method: "PATCH",
           headers: {

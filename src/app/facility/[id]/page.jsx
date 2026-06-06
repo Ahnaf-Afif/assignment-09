@@ -25,7 +25,7 @@ const FacilityDetailsPage = () => {
       try {
         const { data: tokenData } = await authClient.token();
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities/${id}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility/${id}`,
           { headers: { authorization: `Bearer ${tokenData?.token}` } },
         );
         if (res.ok) {
@@ -64,7 +64,7 @@ const FacilityDetailsPage = () => {
       <div className="text-center py-20">
         <p className="text-gray-400 text-lg mb-4">Facility not found.</p>
         <Link
-          href="/facilities"
+          href="/facility"
           className="text-green-600 font-medium hover:underline"
         >
           Back to Facilities
@@ -79,7 +79,7 @@ const FacilityDetailsPage = () => {
     <div className="max-w-7xl mx-auto px-6 py-10">
       {/* Back */}
       <Link
-        href="/facilities"
+        href="/facility"
         className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6"
       >
         <ArrowLeft className="w-4 h-4" /> Back to Facilities

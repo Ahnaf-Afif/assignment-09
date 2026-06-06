@@ -19,7 +19,7 @@ const HomePage = () => {
     const fetchFeatured = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facilities`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility`,
         );
         if (!res.ok) throw new Error("Failed to load facilities");
         const data = await res.json();
@@ -61,7 +61,7 @@ const HomePage = () => {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="/facilities"
+                href="/facility"
                 className="bg-green-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-500 transition-colors flex items-center gap-2"
               >
                 Explore Facilities <ArrowRight className="w-5 h-5" />
@@ -104,7 +104,7 @@ const HomePage = () => {
             {sportCategories.map((cat) => (
               <Link
                 key={cat.name}
-                href={`/facilities?type=${cat.name}`}
+                href={`/facility?type=${cat.name}`}
                 className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 hover:scale-105 transition-all duration-200 cursor-pointer ${cat.color}`}
               >
                 <span className="text-2xl">{cat.icon}</span>
@@ -129,7 +129,7 @@ const HomePage = () => {
             </p>
           </div>
           <Link
-            href="/facilities"
+            href="/facility"
             className="text-green-600 font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all"
           >
             View All <ArrowRight className="w-4 h-4" />
@@ -225,7 +225,7 @@ const HomePage = () => {
               ))}
             </ul>
             <Link
-              href="/facilities"
+              href="/facility"
               className="inline-flex items-center gap-2 mt-8 bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors"
             >
               Book a Facility <ArrowRight className="w-4 h-4" />

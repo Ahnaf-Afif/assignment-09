@@ -46,7 +46,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/facilities"
+              href="/facility"
               className="hover:text-green-600 transition-colors"
             >
               All Facilities
@@ -141,7 +141,7 @@ const Navbar = () => {
             Home
           </Link>
           <Link
-            href="/facilities"
+            href="/facility"
             onClick={() => setMenuOpen(false)}
             className="block text-gray-700 font-medium py-1"
           >

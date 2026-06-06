@@ -80,7 +80,7 @@ const MyBookingsPage = () => {
             No bookings yet. Start exploring facilities!
           </p>
           <Link
-            href="/facilities"
+            href="/facility"
             className="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors inline-block"
           >
             Explore Facilities

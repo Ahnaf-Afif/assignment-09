@@ -32,7 +32,7 @@ const FacilityCard = ({ facility }) => {
     if (!session) {
       router.push("/login");
     } else {
-      router.push(`/facilities/${_id}`);
+      router.push(`/facility/${_id}`);
     }
   };
 
