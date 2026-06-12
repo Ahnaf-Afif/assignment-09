@@ -20,6 +20,7 @@ const FacilitiesPage = () => {
   const [selectedType, setSelectedType] = useState("All");
   const [facilities, setFacilities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const type = new URLSearchParams(window.location.search).get("type");
@@ -29,18 +30,25 @@ const FacilitiesPage = () => {
   useEffect(() => {
     const fetchFacilities = async () => {
       try {
+        setLoading(true);
+        setError("");
         const params = new URLSearchParams();
         if (search) params.set("search", search);
         if (selectedType !== "All") params.set("type", selectedType);
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000"}/facility?${params.toString()}`,
         );
-        if (res.ok) {
-          const data = await res.json();
-          setFacilities(data);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch facilities (${res.status})`);
         }
-      } catch {
+        const data = await res.json();
+        setFacilities(data);
+      } catch (error) {
+        console.error("Failed to fetch facilities:", error);
         setFacilities([]);
+        setError(
+          "Could not load facilities. Check the deployed server URL and CORS configuration.",
+        );
       } finally {
         setLoading(false);
       }
@@ -114,6 +122,10 @@ const FacilitiesPage = () => {
       {loading ? (
         <div className="flex justify-center py-20">
           <div className="w-10 h-10 border-4 border-green-200 border-t-green-600 rounded-full animate-spin" />
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-red-500 text-lg">{error}</p>
         </div>
       ) : facilities.length === 0 ? (
         <div className="text-center py-20">
